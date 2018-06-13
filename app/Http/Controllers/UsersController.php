@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 use App\User;
 
+use App\Micropost;
+
 class UsersController extends Controller
 {
     
@@ -22,7 +24,7 @@ class UsersController extends Controller
  
     public function show($id)
     {
-         $user = User::find($id);
+        $user = User::find($id);
         $microposts = $user->microposts()->orderBy('created_at', 'desc')->paginate(10);
 
         $data = [
@@ -35,18 +37,6 @@ class UsersController extends Controller
         return view('users.show', $data);
     }
 
-
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-    
     public function followings($id)
     {
         $user = User::find($id);
@@ -77,4 +67,22 @@ class UsersController extends Controller
         return view('users.followers', $data);
     }
     
+    
+    
+     public function favorites($id)
+    {
+        $user = User::find($id);
+        $favorites = $user->favorites()->paginate(10);
+
+        $data = [
+            'user' => $user,
+            'microposts' =>$favorites,
+        ];
+
+        $data += $this->counts($user);
+
+        return view('users.favorites', $data);
+    }
+
+  
 }
